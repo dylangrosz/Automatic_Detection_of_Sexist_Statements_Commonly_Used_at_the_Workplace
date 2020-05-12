@@ -49,7 +49,7 @@ logging.basicConfig(level=logging.INFO)
 # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 np.random.seed(0)
-os.environ["PATH"] += os.pathsep + 'C:/Program Files/graphviz-2.38/bin'
+#os.environ["PATH"] += os.pathsep + 'C:/Program Files/graphviz-2.38/bin'
 
 # word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/glove.6B.50d2.txt')
 word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('vectors300.txt')
