@@ -12,8 +12,6 @@ from keras.models import load_model, Model, Sequential
 from keras.utils import plot_model
 from sklearn.preprocessing import StandardScaler
 import keras.backend as K
-# import bert_embedding
-# from bert_embedding import BertEmbedding
 from keras import layers, regularizers, initializers
 
 from sklearn.metrics import f1_score, precision_score, recall_score
@@ -52,7 +50,7 @@ np.random.seed(0)
 #os.environ["PATH"] += os.pathsep + 'C:/Program Files/graphviz-2.38/bin'
 
 # word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/glove.6B.50d2.txt')
-word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('vectors300.txt')
+word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/vectors.txt')
 #word_to_index_FT, index_to_word_FT, word_to_vec_map_FT = read_glove_vecs('data/wiki-news-300d-1M2.vec')
 
 X, y = read_csv('data/SD_dataset_FINAL.csv')
