@@ -1,4 +1,4 @@
-from SexisteDetectionKFold import pretrained_embedding_layer
+from SexisteDetectionMain import pretrained_embedding_layer
 from data_handler import get_data
 import argparse
 from keras.preprocessing.sequence import pad_sequences
