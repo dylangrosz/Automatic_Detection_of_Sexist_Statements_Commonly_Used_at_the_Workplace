@@ -24,7 +24,7 @@ After downloading the dataset, make sure to either name your embedding text file
 
 #### Sexist Workplace Statements Dataset
 
-The dataset we used for training is provided in ```data/SD_dataset_FINAL.csv```. It is also present on Kaggle: https://www.kaggle.com/dgrosz/sexist-workplace-statements. If you would like to update the dataset 
+The dataset we used for training is provided in ```data/SD_dataset_FINAL.csv```. It is also present on Kaggle: https://www.kaggle.com/dgrosz/sexist-workplace-statements. If you would like to update the dataset and reupload, either place it in the ```data``` folder and rename it to ```SD_dataset_FINAL.csv``` or edit the ```sexist_dataset_fn``` variable on line 36 of ```SexisteDetectionMain.py```.
 
 ### Running the Models
 
