@@ -29,11 +29,14 @@ import gc
 np.random.seed(0)
 #os.environ["PATH"] += os.pathsep + 'C:/Program Files/graphviz-2.38/bin'
 
+sexist_dataset_fn = 'data/SD_dataset_FINAL.csv'
+embedding_fn = 'data/vectors.txt'
+
 # word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/glove.6B.50d2.txt')
-word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/vectors.txt')
+word_to_index, index_to_word, word_to_vec_map = read_glove_vecs(embedding_fn)
 #word_to_index_FT, index_to_word_FT, word_to_vec_map_FT = read_glove_vecs('data/wiki-news-300d-1M2.vec')
 
-sexist_dataset_fn = 'data/SD_dataset_FINAL.csv'
+
 
 X, y = read_csv(sexist_dataset_fn)
 m = len(y)
