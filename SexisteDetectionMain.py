@@ -33,7 +33,9 @@ np.random.seed(0)
 word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/vectors.txt')
 #word_to_index_FT, index_to_word_FT, word_to_vec_map_FT = read_glove_vecs('data/wiki-news-300d-1M2.vec')
 
-X, y = read_csv('data/SD_dataset_FINAL.csv')
+sexist_dataset_fn = 'data/SD_dataset_FINAL.csv'
+
+X, y = read_csv(sexist_dataset_fn)
 m = len(y)
 maxLen = len(max(X, key=len).split()) + 1
 
@@ -334,21 +336,18 @@ fp_sum_v, fn_sum_v = [0] * (n_models + 1), [0] * (n_models + 1)
 tp_sum_v, tn_sum_v = [0] * (n_models + 1), [0] * (n_models + 1)
 num_0s_sum, num_1s_sum = 0, 0
 
-runModels = [None, False,
-             False,
-             False,
-             True,
-             False,
-             False,
-             False,
-             False]
+runModels = [None,
+             True,  # run ModelV1?
+             True,  # run ModelV2?
+             True,  # run ModelV3?
+             True,] # run ModelV4?
 
 gb_accs = [0, 0, 0]
 if __name__ == "__main__":
     for it in range(num_it):
         print("\nIteration #" + str(it + 1))
 
-        X, y = read_csv('data/SD_dataset_FINAL.csv')
+        X, y = read_csv(sexist_dataset_fn)
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=np.random)
         maxLen = len(max(X, key=len).split()) + 1
         y_oh_train = convert_to_one_hot(y_train, C=2)
