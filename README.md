@@ -34,6 +34,6 @@ After all the embeddings and sexist workplace statements datasets are properly l
  - ModelV3: word embeddings (you can toggle between random embeddings and loaded GloVe embeddings in the function call) are sequentially pushed through a Bidirectional LSTM architecture, specifically ```Embedding->BiLSTM->Dropout->BiLSTM->FullyConnected->Softmax```
  - ModelV4: embeddings (you can toggle between random embeddings and loaded GloVe embeddings in the function call) are pushed through a Bidirectional LSTM architecture with attention, specifically ```Embedding->BiLSTM->Dropout->BiLSTM->Attention->FullyConnected->Softmax```
  
-If you don't change the initial code and run ```SexisteDetectionMain.py```, all of these listed models will run sequentially, performing 10 iterations of training and testing (respective training/testing sets are chosen at random for each iteration). You can edit number of iterations on line 330, and you can edit the list of which models to run in the runModels boolean list (lines 337-341).
+If you don't change the initial code and run ```SexisteDetectionMain.py```, all of these listed models will run sequentially, performing 10 iterations of training and testing (respective training/testing sets are chosen at random for each iteration). You can edit number of iterations on line 335, and you can edit the list of which models to run in the runModels boolean list (lines 342-346).
 
 For any questions, please email Dylan Grosz at _dgrosz 'at' stanford 'dot' edu_.
