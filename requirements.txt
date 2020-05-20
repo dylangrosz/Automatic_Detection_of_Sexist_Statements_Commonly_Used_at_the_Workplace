@@ -199,7 +199,7 @@ QtPy==1.4.1
 requests==2.20.0
 requests-oauthlib==1.2.0
 resampy==0.2.1
-rope==0.10.7
+rope==0.11.0
 rsa==4.0
 ruamel-yaml==0.15.35
 s3transfer==0.2.0
