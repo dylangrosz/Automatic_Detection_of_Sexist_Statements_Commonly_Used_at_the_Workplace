@@ -1,18 +1,10 @@
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.wrappers.scikit_learn import KerasRegressor, KerasClassifier
-from keras.models import Model
 from keras.layers import Dense, Input, Dropout, LSTM, Activation, TimeDistributed, Flatten, merge#, GlobalAveragePooling1D, regularizers
 from keras.layers.embeddings import Embedding
-from keras.layers import wrappers, Input, recurrent, InputLayer
 from keras.layers import Bidirectional, Concatenate, Permute, Dot, Input, LSTM, Multiply
 from keras.layers import RepeatVector, Dense, Activation, Lambda
-from keras.optimizers import Adam
-from keras.utils import to_categorical
 from keras.models import load_model, Model, Sequential
 from keras.utils import plot_model
-from sklearn.preprocessing import StandardScaler
-import keras.backend as K
-from keras import layers, regularizers, initializers
 
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.ensemble import GradientBoostingClassifier, AdaBoostRegressor, AdaBoostClassifier
@@ -32,11 +24,7 @@ np.random.seed(0)
 sexist_dataset_fn = 'data/SD_dataset_FINAL.csv'
 embedding_fn = 'data/vectors.txt'
 
-# word_to_index, index_to_word, word_to_vec_map = read_glove_vecs('data/glove.6B.50d2.txt')
 word_to_index, index_to_word, word_to_vec_map = read_glove_vecs(embedding_fn)
-#word_to_index_FT, index_to_word_FT, word_to_vec_map_FT = read_glove_vecs('data/wiki-news-300d-1M2.vec')
-
-
 
 X, y = read_csv(sexist_dataset_fn)
 m = len(y)
@@ -81,12 +69,9 @@ def sentences_to_indices(X_s, word_to_index, max_len):
 
     m = X_s.shape[0]  # number of training examples
 
-    ### START CODE HERE ###
-    # Initialize X_indices as a numpy matrix of zeros and the correct shape (≈ 1 line)
     X_indices = np.zeros((m, max_len))  # If there is more than one dimension use ()
 
     for i in range(m):  # loop over training examples
-        # Convert the ith training sentence in lower case and split is into words. You should get a list of words.
         sentence_words = X_s[i].lower().split()
 
         j = 0
@@ -94,8 +79,6 @@ def sentences_to_indices(X_s, word_to_index, max_len):
             if j < max_len and w in word_to_index:
                 X_indices[i, j] = word_to_index[w]
             j = j + 1
-
-    ### END CODE HERE ###
 
     return X_indices
 
@@ -115,7 +98,7 @@ def pretrained_embedding_layer(word_to_vec_map, word_to_index):
     vocab_len = len(word_to_index) + 2  # adding 1 to fit Keras embedding (requirement)
     emb_dim = word_to_vec_map["cucumber"].shape[0]  # define dimensionality of your GloVe word vectors (= 50)
     print(emb_dim)
-    ### START CODE HERE ###
+
     # Initialize the embedding matrix as a numpy array of zeros of shape (vocab_len, dimensions of word vectors = emb_dim)
     emb_matrix = np.zeros((vocab_len, emb_dim))
 
@@ -207,75 +190,43 @@ def modelV2(input_shape, word_to_vec_map, word_to_index, lay1_num=128, lay2_num=
     model -- a model instance in Keras
     """
 
-    ### START CODE HERE ###
-    # Define sentence_indices as the input of the graph, it should be of shape input_shape and dtype 'int32' (as it contains indices).
     sentence_indices = Input(shape=input_shape, dtype='int32')
-
-    # Create the embedding layer pretrained with GloVe Vectors (≈1 line)
     embedding_layer = pretrained_embedding_layer(word_to_vec_map, word_to_index)
-
-    # Propagate sentence_indices through your embedding layer, you get back the embeddings
     embeddings = embedding_layer(sentence_indices)
 
-    # Propagate the embeddings through an LSTM layer with 128-dimensional hidden state
-    # Be careful, the returned output should be a batch of sequences.
     X = LSTM(lay1_num, return_sequences=True)(embeddings)
-    # Add dropout with a probability of 0.5
     X = Dropout(0.5)(X)
-    # Propagate X trough another LSTM layer with 128-dimensional hidden state
-    # Be careful, the returned output should be a single hidden state, not a batch of sequences.
     X = LSTM(lay2_num, return_sequences=False)(X)
-    # Add dropout with a probability of 0.5
     X = Dropout(0.5)(X)
-    # Propagate X through a Dense layer with softmax activation to get back a batch of 5-dimensional vectors.
     X = Dense(2, activation='softmax')(X)
-    # Add a softmax activation
     X = Activation('softmax')(X)
 
-    # Create Model instance which converts sentence_indices into X.
     model = Model(inputs=sentence_indices, outputs=X)
-
-    ### END CODE HERE ###
 
     return model
 
 
 def modelV3(input_shape, word_to_vec_map, word_to_index, lay1_num=128, lay2_num=128):
-    # Define sentence_indices as the input of the graph, it should be of shape input_shape and dtype 'int32' (as it contains indices).
+
     sentence_indices = Input(shape=input_shape, dtype='int32')
-
-    # Create the embedding layer pretrained with GloVe Vectors (≈1 line)
     embedding_layer = pretrained_embedding_layer(word_to_vec_map, word_to_index)
-
-    # Propagate sentence_indices through your embedding layer, you get back the embeddings
     embeddings = embedding_layer(sentence_indices)
 
-    # Propagate the embeddings through an LSTM layer with 128-dimensional hidden state
-    # Be careful, the returned output should be a batch of sequences.
     X = Bidirectional(LSTM(lay1_num, return_sequences=True), input_shape=input_shape)(embeddings)
-    # Add dropout with a probability of 0.5
     X = Dropout(0.5)(X)
-    # Propagate X trough another LSTM layer with 128-dimensional hidden state
-    # Be careful, the returned output should be a single hidden state, not a batch of sequences.
     X = Bidirectional(LSTM(lay2_num, return_sequences=False), input_shape=input_shape)(X)
-    # Add dropout with a probability of 0.5
     X = Dropout(0.5)(X)
-    # Propagate X through a Dense layer with softmax activation to get back a batch of 5-dimensional vectors.
     X = Dense(2, activation='softmax')(X)
-    # Add a softmax activation
     X = Activation('softmax')(X)
 
-    # Create Model instance which converts sentence_indices into X.
     model = Model(inputs=sentence_indices, outputs=X)
-
-    ### END CODE HERE ###
 
     return model
 
 
 def modelV4(input_shape, word_to_vec_map, word_to_index, lay1_num=128, lay2_num=128, n_features=50,
             isRandom=False, isAttention=True):
-    # Define sentence_indices as the input of the graph, it should be of shape input_shape and dtype 'int32' (as it contains indices).
+
     sentence_indices = Input(shape=input_shape, dtype='int32')
 
     embeddings = None
@@ -294,15 +245,9 @@ def modelV4(input_shape, word_to_vec_map, word_to_index, lay1_num=128, lay2_num=
     else:
         embedding_layer = pretrained_embedding_layer(word_to_vec_map, word_to_index)
         embeddings = embedding_layer(sentence_indices)
-    # X = Dropout(0.25)(embeddings)
 
     X = Bidirectional(LSTM(lay1_num, return_sequences=True), input_shape=input_shape)(embeddings)
-    # Add dropout with a probability of 0.5
     X = Dropout(0.5)(X)
-
-    # Propagate X trough another LSTM layer with 128-dimensional hidden state
-    # Be careful, the returned output should be a single hidden state, not a batch of sequences.
-    #   X = AttentionDecoder(lay2_num, n_features)
     if isAttention:
         attention = Dense(1, activation='tanh')(X)
         attention = Flatten()(attention)
@@ -319,15 +264,10 @@ def modelV4(input_shape, word_to_vec_map, word_to_index, lay1_num=128, lay2_num=
         X = Dropout(0.5)(X)
         pass
 
-    # Propagate X through a Dense layer with softmax activation to get back a batch of 5-dimensional vectors.
     X = Dense(2, activation='softmax')(X)
-    # Add a softmax activation
     X = Activation('softmax')(X)
 
-    # Create Model instance which converts sentence_indices into X.
     model = Model(inputs=sentence_indices, outputs=X)
-
-    ### END CODE HERE ###
 
     return model
 
@@ -408,10 +348,6 @@ if __name__ == "__main__":
             for k in range(len(X_test)):
                 num = np.argmax(predV2[k])
                 if num != y_test[k]:
-                    # if X_test[k] in wrongs_dict:
-                    #     wrongs_dict[X_test[k]] += 1
-                    # else:
-                    #     wrongs_dict[X_test[k]] = 1
                     if int(num) == 1:
                         v2_fp += 1
                     elif int(num) == 0:
@@ -450,10 +386,6 @@ if __name__ == "__main__":
             for k in range(len(X_test)):
                 num = np.argmax(predV2[k])
                 if num != y_test[k]:
-                    # if X_test[k] in wrongs_dict:
-                    #     wrongs_dict[X_test[k]] += 1
-                    # else:
-                    #     wrongs_dict[X_test[k]] = 1
                     if int(num) == 1:
                         v3_fp += 1
                     elif int(num) == 0:
@@ -487,11 +419,9 @@ if __name__ == "__main__":
             model_v4 = modelV4((maxLen,), word_to_vec_map, word_to_index, lay1_num=128, lay2_num=128, n_features=maxLen,
                                isRandom=False, isAttention=True)
             model_v4.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-            #plot_model(model_v4, to_file='model_v4.png')
 
             X_train_indices = sentences_to_indices(X_train, word_to_index, maxLen)
             y_train_oh = convert_to_one_hot(y_train, C=2)
-            # print(y_train_oh.shape)
             model_v4.fit(X_train_indices, y_train_oh, epochs=30, batch_size=32, shuffle=True,
                          callbacks=[early_stopping, model_checkpoint])
 
