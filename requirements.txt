@@ -189,7 +189,7 @@ python-rtmidi===1.1.1.dev0.dev
 python-twitter==3.5
 pytz==2018.4
 PyWavelets==0.5.2
-pywin32==223
+pywin32==301
 pywinpty==0.5.1
 PyYAML==3.12
 pyzmq==17.0.0
